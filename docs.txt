@@ -1,0 +1,17 @@
+Open ai response format
+===============================
+ChatCompletion(
+    id='chatcmpl-...',
+    choices=[
+        Choice(
+            index=0,
+            message=ChatCompletionMessage(
+                role='assistant',
+                content='Hello! How can I help you?'
+            )
+        )
+    ],
+    model='openai/gpt-4o-mini',
+    usage=...
+)
+

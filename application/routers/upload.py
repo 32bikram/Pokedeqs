@@ -1,4 +1,6 @@
 from fastapi import FastAPI, APIRouter, UploadFile, File, HTTPException, status
+import base64
+from . import test
 
 router = APIRouter(
     tags = ['Uploading'],
@@ -22,6 +24,9 @@ async def upload_file(file : UploadFile = File(...)):
         )
     
     image_bytes = await file.read()
+    base64_image = base64.b64encode(image_bytes).decode("utf-8")
+    test.call_llm(base64_image)
+    
     if(len(image_bytes) == 0):
         raise HTTPException(
             status_code = status.HTTP_400_BAD_REQUEST,
@@ -31,5 +36,5 @@ async def upload_file(file : UploadFile = File(...)):
     return {
         "filename" : file.filename,
         "content_type" : file.content_type,
-        "file_size" : len(image_bytes)
+        "file_size" : f"{round(len(image_bytes)/(1024*1024),2)}MB"
     }
