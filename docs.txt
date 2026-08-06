@@ -15,3 +15,194 @@ ChatCompletion(
     usage=...
 )
 
+=======================================
+Rule to remember Only these should use Depends(): - ✅ @router.get - ✅ @router.post - ✅ Other FastAPI dependency functions
+
+why?
+
+This is one of the most important concepts in FastAPI. The reason is who calls the function.
+
+Case 1: FastAPI calls the function ✅
+@router.post("/upload")
+def upload(
+    db: Session = Depends(get_db)
+):
+    ...
+
+When a request comes in, FastAPI calls upload().
+
+Before calling it, FastAPI sees:
+
+Depends(get_db)
+
+and does this internally:
+
+db = get_db()      # simplified
+upload(db)
+
+So db becomes a real SQLAlchemy Session.
+
+Case 2: You call the function ❌
+
+Suppose you have
+
+def card_bought(
+    card: schemas.Card,
+    db: Session = Depends(get_db)
+):
+    ...
+
+and then write
+
+card_bought(card)
+
+Python knows nothing about FastAPI.
+
+It simply says:
+
+"You didn't provide db, so I'll use the default value."
+===============================================================
+query returns like this 
+card_details = (
+    <Cards object>,
+    6
+)
+i.e.
+card_details = (
+    models.Cards(
+        pokemon_name="Arceus & Dialga & Palkia",
+        card_name="Arceus & Dialga & Palkia-GX",
+        set_name="Cosmic Eclipse",
+        card_number="258/236",
+    ),
+    6
+)
+we do 
+card_obj, count = card_details
+Python does:
+card_obj = <Cards object> akhane list hoye gelo
+count = 6  akhane count gelo ga
+
+Now you can access:
+card_obj.pokemon_name
+card_obj.card_name
+card_obj.set_name
+card_obj.card_number
+==============================================================
+card_obj, count = card_details
+    data = schemas.Card.model_validate(card_obj).model_dump()
+    data["card_count"] = count
+    return schemas.CardDetails(**data)
+    
+ Sure. Let's go through it line by line.
+
+card_obj, count = card_details
+
+Suppose your SQLAlchemy query returned:
+
+card_details = (
+    <Cards object>,
+    6
+)
+
+After unpacking:
+
+card_obj = <Cards object>
+count = 6
+
+So now:
+
+card_obj.pokemon_name
+
+works because card_obj is your SQLAlchemy Cards model.
+
+Line 2
+data = schemas.Card.model_validate(card_obj).model_dump()
+
+This line actually does two things.
+
+Step A
+schemas.Card.model_validate(card_obj)
+
+card_obj is a SQLAlchemy object.
+
+For example:
+
+card_obj.pokemon_name = "Arceus"
+card_obj.card_name = "Arceus GX"
+card_obj.set_name = "Cosmic Eclipse"
+card_obj.card_number = "258/236"
+
+model_validate() tells Pydantic:
+
+"Take this SQLAlchemy object and create a schemas.Card object from it."
+
+So after this:
+
+card = schemas.Card(
+    pokemon_name="Arceus",
+    card_name="Arceus GX",
+    set_name="Cosmic Eclipse",
+    card_number="258/236",
+)
+Step B
+
+Immediately after that:
+
+.model_dump()
+
+converts the Pydantic object into a dictionary.
+
+So now:
+
+data = {
+    "pokemon_name": "Arceus",
+    "card_name": "Arceus GX",
+    "set_name": "Cosmic Eclipse",
+    "card_number": "258/236"
+}
+Line 3
+data["card_count"] = count
+
+Remember:
+
+count = 6
+
+So now the dictionary becomes:
+
+data = {
+    "pokemon_name": "Arceus",
+    "card_name": "Arceus GX",
+    "set_name": "Cosmic Eclipse",
+    "card_number": "258/236",
+    "card_count": 6
+}
+
+This now matches your response schema perfectly.
+
+Line 4
+return schemas.CardDetails(**data)
+
+Remember what ** does.
+
+It takes a dictionary:
+
+{
+    "pokemon_name": "Arceus",
+    "card_name": "Arceus GX",
+    "set_name": "Cosmic Eclipse",
+    "card_number": "258/236",
+    "card_count": 6
+}
+
+and expands it into keyword arguments:
+
+schemas.CardDetails(
+    pokemon_name="Arceus",
+    card_name="Arceus GX",
+    set_name="Cosmic Eclipse",
+    card_number="258/236",
+    card_count=6
+)
+
+which is exactly what FastAPI expects to return.

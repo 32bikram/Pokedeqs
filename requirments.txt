@@ -5,3 +5,8 @@ sqlalchemy
 python-multipart
 openai
 pydantic_settings
+python-jose
+passlib
+psycopg2-binary
+'pydantic[email]'
+google-genai

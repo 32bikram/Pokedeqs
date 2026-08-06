@@ -1,10 +1,13 @@
 from fastapi import FastAPI
-from . import models
-from .routers import upload
+from . import models, database
+from .routers import upload, auth, user
 
-# models.Base.metadata.create_all(bind = engine)
+models.Base.metadata.create_all(bind = database.engine)
 app = FastAPI()
+app.include_router(auth.router)
 app.include_router(upload.router)
+app.include_router(user.router)
+
 
 @app.get("/")
 def home():
