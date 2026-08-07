@@ -1,5 +1,6 @@
 #IDENTIFIES THE CARD USING OPENAI
 # from openai import OpenAI
+from fastapi import HTTPException, status
 from google import genai
 from google.genai import types
 
@@ -9,7 +10,7 @@ def call_llm(image_bytes):
     prompt = '''You are an expert Pokémon card identifier.
                 Analyze the uploaded Pokémon card.
                 specially focus on its set name(i.e. crown zeinth, scarlet violet, paledian fates etc.)
-                and the unique id of that card in the set.
+                and the unique id of that card in the set. card_name should follow like charizard vmax, charidard vstar.
                 Return ONLY valid JSON. proper formating of json is must. opening and closing bracket and colons.
                 Schema:
                 {
@@ -22,7 +23,9 @@ def call_llm(image_bytes):
                 - Do not include markdown.
                 - Do not include explanations.
                 - Do not wrap the JSON in ```json.
-                - If a field cannot be determined, return null.'''
+                - If a field cannot be determined, return null.
+                **Most important Note - only if the image isn't of a pokemon card return a single word -> None
+                '''
 
     client = genai.Client(api_key=config.settings.llm_api)
 
@@ -36,9 +39,13 @@ def call_llm(image_bytes):
             ),
         ],
         config=types.GenerateContentConfig(
-            max_output_tokens=1000,
+            max_output_tokens=800,   #minimum 700 works
             temperature=0,
         ),
     )
-
+    if(response.text=="None"):
+        raise HTTPException(
+            status_code = status.HTTP_400_BAD_REQUEST,
+            detail = "not a card image"
+        )
     return response.text
