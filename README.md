@@ -88,7 +88,7 @@ Interactive API docs are available at `/docs` once the server is running.
 
 ### Frontend
 
-The `frontend/` folder is static — no build step. Open `index.html` in a browser, or serve the folder with any static file server. Set the API URL field in the top bar to wherever your backend is running (defaults to `http://localhost:8000`).
+The `frontend/` folder is static — no build step. Open `index.html` in a browser, or serve the folder with any static file server. Set the API URL field in the top bar to wherever your backend is running (defaults to `http://localhost:8000`). It is generated with the help of LLM.
 
 ## Known limitations / roadmap
 
