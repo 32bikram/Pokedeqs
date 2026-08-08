@@ -29,7 +29,15 @@ async def upload_file(file : UploadFile = File(...),
     image_bytes = await file.read()
     # base64_image = base64.b64encode(image_bytes).decode("utf-8")
     card_details = identifier.call_llm(image_bytes)
-    card_details = schemas.Card.model_validate_json(card_details)
+    try:
+            card_details = schemas.Card.model_validate_json(card_details)
+    except:
+         print("gemini returned shit")
+         raise HTTPException(
+              status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+              #incase gemeini doesnt return proper json format
+              detail = "Please try again"
+         )
 
     if(len(image_bytes) == 0):
         raise HTTPException(

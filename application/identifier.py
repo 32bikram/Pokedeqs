@@ -28,24 +28,29 @@ def call_llm(image_bytes):
                 '''
 
     client = genai.Client(api_key=config.settings.llm_api)
-
-    response = client.models.generate_content(
-        model="gemini-3.5-flash",
-        contents=[
-            prompt,
-            types.Part.from_bytes(
-                data=image_bytes,
-                mime_type="image/jpeg",
+    try:
+        response = client.models.generate_content(
+            model="gemini-3.5-flash",
+            contents=[
+                prompt,
+                types.Part.from_bytes(
+                    data=image_bytes,
+                    mime_type="image/jpeg",
+                ),
+            ],
+            config=types.GenerateContentConfig(
+                max_output_tokens=900,   #minimum 800 works
+                temperature=0,
             ),
-        ],
-        config=types.GenerateContentConfig(
-            max_output_tokens=800,   #minimum 700 works
-            temperature=0,
-        ),
-    )
-    if(response.text=="None"):
-        raise HTTPException(
-            status_code = status.HTTP_400_BAD_REQUEST,
-            detail = "not a card image"
         )
-    return response.text
+        if(response.text=="None"):
+            raise HTTPException(
+                status_code = status.HTTP_400_BAD_REQUEST,
+                detail = "Not a card image"
+            )
+        return response.text
+    except:
+        raise HTTPException(
+            status_code = status.HTTP_402_PAYMENT_REQUIRED,
+            detail = "Not enough api token"
+        )

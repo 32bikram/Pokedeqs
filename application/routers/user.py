@@ -12,13 +12,20 @@ def createUser(user : schemas.GetUser, db : Session = Depends(get_db)): #getuser
     existing_user = db.query(models.Users).filter(models.Users.email == user.email).first()
     if existing_user is not None:
         raise HTTPException(
-            status_code = status.HTTP_208_ALREADY_REPORTED 
+            status_code = status.HTTP_208_ALREADY_REPORTED,
+            detail = "user with same credential exist"
         )
     user.password = utils.hash(user.password)
-    res = models.Users(**user.model_dump())  #users = actual schema or table
-    db.add(res)
-    db.commit()
-    db.refresh(res)
+    try:
+        res = models.Users(**user.model_dump())  #users = actual schema or table
+        db.add(res)
+        db.commit()
+        db.refresh(res)
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = "Please try again after some time"
+        )
     return res
 
 

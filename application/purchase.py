@@ -18,18 +18,25 @@ def card_bought(card : schemas.Card, db : Session, current_user : models.Users):
         card_data.card_count += 1
         db.commit()
         db.refresh(card_data)
-    card_details = (
-        db.query(models.Cards, models.Collections.card_count)
-        .join(
-            models.Collections,
-            models.Cards.card_id == models.Collections.card_id
-        )
-        .filter(
-            models.Cards.card_id == card.card_id,
-            models.Collections.user_id == current_user.user_id
-        )
-        .first()
-    )
+        try:
+            card_details = (
+                db.query(models.Cards, models.Collections.card_count)
+                .join(
+                    models.Collections,
+                    models.Cards.card_id == models.Collections.card_id
+                )
+                .filter(
+                    models.Cards.card_id == card.card_id,
+                    models.Collections.user_id == current_user.user_id
+                )
+                .first()
+            )
+        except:
+            print("error in card bought")
+            raise HTTPException(
+                status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail = "Please try again after some time"
+            )
     card_obj, count = card_details
     data = schemas.Card.model_validate(card_obj).model_dump()
     data["card_count"] = count
@@ -39,12 +46,12 @@ def card_bought(card : schemas.Card, db : Session, current_user : models.Users):
 def card_sold(card : schemas.Card, db : Session, current_user : models.Users):
     set_name = card.set_name.strip().lower().replace(" ", "_")
     card_id = f"{set_name}-{card.card_number}"
-    print(card_id)
 
     card_data = (db.query(models.Collections).filter
     (models.Collections.card_id==card_id,models.Collections.user_id==current_user.user_id).first())
 
     if card_data is None:
+        print("problem in purchaase line 54")
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Card not found in collection."
@@ -60,18 +67,25 @@ def card_sold(card : schemas.Card, db : Session, current_user : models.Users):
     db.commit()
     db.refresh(card_data)
 
-    card_details = (
-            db.query(models.Cards, models.Collections.card_count)
-            .join(
-                models.Collections,
-                models.Cards.card_id == models.Collections.card_id
-            )
-            .filter(
-                models.Cards.card_id == card_id,
-                models.Collections.user_id == current_user.user_id
-            )
-            .first()
-    )
+    try:
+        card_details = (
+                db.query(models.Cards, models.Collections.card_count)
+                .join(
+                    models.Collections,
+                    models.Cards.card_id == models.Collections.card_id
+                )
+                .filter(
+                    models.Cards.card_id == card_id,
+                    models.Collections.user_id == current_user.user_id
+                )
+                .first()
+        )
+    except:
+        print("error in card sell")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = "Please try again after some time"
+        )
     if(card_details==None):
         raise HTTPException(
             status_code = status.HTTP_204_NO_CONTENT,
