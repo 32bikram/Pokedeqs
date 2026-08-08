@@ -17,49 +17,32 @@ ChatCompletion(
 
 =======================================
 Rule to remember Only these should use Depends(): - ✅ @router.get - ✅ @router.post - ✅ Other FastAPI dependency functions
-
 why?
-
 This is one of the most important concepts in FastAPI. The reason is who calls the function.
-
 Case 1: FastAPI calls the function ✅
 @router.post("/upload")
 def upload(
     db: Session = Depends(get_db)
 ):
     ...
-
 When a request comes in, FastAPI calls upload().
-
 Before calling it, FastAPI sees:
-
 Depends(get_db)
-
 and does this internally:
-
 db = get_db()      # simplified
 upload(db)
-
 So db becomes a real SQLAlchemy Session.
-
 Case 2: You call the function ❌
-
 Suppose you have
-
 def card_bought(
     card: schemas.Card,
     db: Session = Depends(get_db)
 ):
     ...
-
 and then write
-
 card_bought(card)
-
 Python knows nothing about FastAPI.
-
 It simply says:
-
 "You didn't provide db, so I'll use the default value."
 ===============================================================
 query returns like this 
@@ -206,3 +189,7 @@ schemas.CardDetails(
 )
 
 which is exactly what FastAPI expects to return.
+===============================================================
+PYTHON MULTIPART
+------------------
+used python-multipart because my FastAPI application accepts image uploads. File uploads are sent using the multipart/form-data content type, and FastAPI relies on python-multipart to parse that request and extract the uploaded file. This allows to receive the image through UploadFile and then process its bytes without storing the image permanently.
