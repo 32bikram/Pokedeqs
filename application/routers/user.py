@@ -12,7 +12,7 @@ def createUser(user : schemas.GetUser, db : Session = Depends(get_db)): #getuser
     existing_user = db.query(models.Users).filter(models.Users.email == user.email).first()
     if existing_user is not None:
         raise HTTPException(
-            status_code = status.HTTP_208_ALREADY_REPORTED,
+            status_code = status.HTTP_409_CONFLICT,
             detail = "user with same credential exist"
         )
     user.password = utils.hash(user.password)
