@@ -6,7 +6,8 @@ python-multipart
 openai
 pydantic_settings
 python-jose
-passlib
+passlib[bcrypt]
+bcrypt==4.0.1
 psycopg2-binary
 pydantic[email]
 google-genai
