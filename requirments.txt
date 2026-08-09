@@ -10,3 +10,4 @@ passlib
 psycopg2-binary
 'pydantic[email]'
 google-genai
+alembic
