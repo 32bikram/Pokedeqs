@@ -8,6 +8,6 @@ pydantic_settings
 python-jose
 passlib
 psycopg2-binary
-'pydantic[email]'
+pydantic[email]
 google-genai
 alembic
