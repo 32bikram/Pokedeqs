@@ -1,4 +1,4 @@
-# Pokedeqs(https://pokedeqs-two.vercel.app/)
+# Pokedeqs[🔗](https://pokedeqs-two.vercel.app/)
 
 Pokedeqs is a Pokémon card collection tracker. Upload a photo of a physical card, and the backend identifies it using a vision LLM (Google Gemini), then adds or removes it from your personal collection on buy and sell. A minimal red/white frontend is included to demo the API end to end.
 
