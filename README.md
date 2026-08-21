@@ -116,6 +116,30 @@ application/
     ├── upload.py                # /upload
     └── carddata.py               # /search
 ```
+### Docker
+
+The backend image is published on Docker Hub as [`kiertolainen/pokedeqs:latest`](https://hub.docker.com/r/kiertolainen/pokedeqs).
+
+Two Compose files are provided in the repo:
+
+- `docker-compose-dev.yml` — development setup
+- `docker-compose-prod.yml` — production setup
+
+Make sure your `.env` file (see the Backend section above) is present in the project root before running either one, then start the stack:
+
+```bash
+# Development
+docker compose -f docker-compose-dev.yml up -d
+
+# Production
+docker compose -f docker-compose-prod.yml up -d
+```
+
+To pull the image directly instead of building from source:
+
+```bash
+docker pull kiertolainen/pokedeqs:latest
+```
 ## Connect with Me
 [![LeetCode](https://img.shields.io/badge/LeetCode-FFA116?style=for-the-badge&logo=leetcode&logoColor=white)](https://leetcode.com/u/kiertolainen/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/bikram-sarkar-b90521257/)
