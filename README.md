@@ -17,6 +17,7 @@ Most collection-tracking apps require manual data entry. PokeDeqs removes that s
 ## Tech stack
 
 **Backend:** FastAPI, SQLAlchemy (ORM), PostgreSQL, Pydantic / `pydantic-settings`, `python-jose` (JWT), `passlib` + bcrypt (password hashing), Google Gemini (`google-genai`) for card identification
+
 **Deployment:** AWS EC2, Docker, Render(Backend), Vercel(Frontend), Neon(Database)
 
 ## Architecture
