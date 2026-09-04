@@ -62,7 +62,7 @@ def get_card_data(pokemon_name : Optional[str] = None, set_name : Optional[str] 
 @router.get("/mycollection")
 def get_user_collection(db : Session = Depends(database.get_db), current_user = Depends(oauth2.get_current_user)):
     user_id = current_user.user_id
-    cards_details = (db.query(models.Cards(), models.Collections.card_count)
+    cards_details = (db.query(models.Cards, models.Collections.card_count)
                 .join(models.Collections, models.Cards.card_id==models.Collections.card_id)
                 .filter(models.Collections.user_id==user_id))
     if(cards_details==None):
