@@ -64,7 +64,7 @@ def get_user_collection(db : Session = Depends(database.get_db), current_user = 
     user_id = current_user.user_id
     cards_details = (db.query(models.Cards, models.Collections.card_count)
                 .join(models.Collections, models.Cards.card_id==models.Collections.card_id)
-                .filter(models.Collections.user_id==user_id))
+                .filter(models.Collections.user_id==user_id, models.Collections.card_count > 0))
     if(cards_details==None):
         raise HTTPException(
             status_code =  status.HTTP_204_NO_CONTENT,
