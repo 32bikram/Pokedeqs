@@ -17,8 +17,7 @@ Most collection-tracking apps require manual data entry. PokeDeqs removes that s
 ## Tech stack
 
 **Backend:** FastAPI, SQLAlchemy (ORM), PostgreSQL, Pydantic / `pydantic-settings`, `python-jose` (JWT), `passlib` + bcrypt (password hashing), Google Gemini (`google-genai`) for card identification
-
-**Frontend:** HTML, CSS, vanilla JavaScript (`fetch` against the REST API — no framework)
+**Deployment:** AWS EC2, Docker, Render(Backend), Vercel(Frontend), Neon(Database)
 
 ## Architecture
 
@@ -51,6 +50,7 @@ Separating `cards` from `collections` means the catalog is only ever identified 
 | POST | `/login` | No | OAuth2 password login, returns a JWT |
 | POST | `/upload/` | Yes | Upload a card image + `action` (`buy`/`sell`) |
 | GET | `/search/?pokemon_name=` or `?set_name=` | Yes | Fuzzy search the collection |
+| GET | `/search/mycollection` | Yes | Returns card list |
 
 Interactive API docs are available at `/docs` once the server is running.
 
