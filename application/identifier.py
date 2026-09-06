@@ -39,7 +39,7 @@ def call_llm(image_bytes):
                 ),
             ],
             config=types.GenerateContentConfig(
-                max_output_tokens=900,   #minimum 800 works
+                max_output_tokens=1200,   #minimum 800 works
                 temperature=0,
             ),
         )
@@ -52,5 +52,5 @@ def call_llm(image_bytes):
     except:
         raise HTTPException(
             status_code = status.HTTP_402_PAYMENT_REQUIRED,
-            detail = "Not enough api token"
+            detail = "My API limit ran out, please try tommorrow"
         )
