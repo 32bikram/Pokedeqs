@@ -55,5 +55,5 @@ def call_llm(image_bytes):
         print("Gemini error:", e)
         raise HTTPException(
             status_code = status.HTTP_402_PAYMENT_REQUIRED,
-            detail = "My API limit ran out, please try tommorrow"
+            detail = "My API limit ran out, please try after 12 P.M."
         )
