@@ -12,6 +12,7 @@ def call_llm(image_bytes):
                 specially focus on its set name(i.e. crown zeinth, scarlet violet, paledian fates etc.)
                 and the unique id of that card in the set. card_name should follow like charizard vmax, charidard vstar.
                 Return ONLY valid JSON. proper formating of json is must. opening and closing bracket and colons.
+                **Most important Note - If the image isn't of a pokemon card return the string -> Not a card
                 Schema:
                 {
                     "pokemon_name": "",
@@ -24,7 +25,6 @@ def call_llm(image_bytes):
                 - Do not include explanations.
                 - Do not wrap the JSON in ```json.
                 - If a field cannot be determined, return null.
-                **Most important Note - only if the image isn't of a pokemon card return a single word -> None
                 '''
 
     client = genai.Client(api_key=config.settings.llm_api)
@@ -43,7 +43,7 @@ def call_llm(image_bytes):
                 temperature=0,
             ),
         )
-        if(response.text=="None"):
+        if(response.text=="Not a card"):
             raise HTTPException(
                 status_code = status.HTTP_400_BAD_REQUEST,
                 detail = "Not a card image"
