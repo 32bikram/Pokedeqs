@@ -49,7 +49,10 @@ def call_llm(image_bytes):
                 detail = "Not a card image"
             )
         return response.text
-    except:
+    except HTTPException:
+        raise
+    except Exception as e:
+        print("Gemini error:", e)
         raise HTTPException(
             status_code = status.HTTP_402_PAYMENT_REQUIRED,
             detail = "My API limit ran out, please try tommorrow"
