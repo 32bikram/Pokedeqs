@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
 class Card(BaseModel):
         pokemon_name : str
@@ -16,7 +16,7 @@ class CardDetails(Card):
 
 class GetUser(BaseModel):
         email : EmailStr
-        password : str
+        password : str = Field(min_length = 8)
 
 class User(BaseModel):
         email : EmailStr
